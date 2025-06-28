@@ -9,8 +9,8 @@ interface CategoryGridProps {
 
 export function CategoryGrid({ selectedCategory, onCategorySelect }: CategoryGridProps) {
   return (
-    <div className="h-screen sticky top-0 bg-white flex items-center justify-center px-1 py-4 overflow-y-auto">
-      <div className="flex flex-col   gap-5 ">
+    <div className="h-screen sticky top-0 bg-white flex items-start justify-center px-1 py-4 overflow-y-auto">
+      <div className="flex flex-col gap-6 ">
         {/* All Items */}
         <button
           onClick={() => onCategorySelect(null)}

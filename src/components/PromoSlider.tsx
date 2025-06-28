@@ -9,7 +9,7 @@ import 'swiper/css';
 
 export const PromoSlider: React.FC = () => {
   return (
-    <div className="">
+    <div className=" p-2">
       <Swiper
         spaceBetween={4}
         slidesPerView={1}

@@ -16,8 +16,8 @@ export function Header({ cart, store, user, onCartClick, onStoreSettingsClick, o
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
-      <div className="w-full  px-4 py-3 flex items-center justify-center " >
-        <div className="flex items-center justify-between w-4/5 ">
+      <div className="w-full sm:px-0  py-3 flex items-center sm:justify-between md:justify-center " >
+        <div className="flex items-center justify-between  px-4 w-full md:w-4/5 ">
           {/* Logo & Store Info */}
           <div className="flex items-center gap-2 min-w-0">
             <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
