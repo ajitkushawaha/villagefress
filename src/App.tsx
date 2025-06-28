@@ -128,7 +128,7 @@ if (isAdmin) {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 ">
       <Header
         cart={cart}
         store={store}
@@ -140,7 +140,7 @@ if (isAdmin) {
 
       <main className="flex max-w-7xl mx-auto w-full">
         {/* Sidebar */}
-        <aside className="w-1/4 border-r border-gray-100 bg-white">
+        <aside className="w-1/5 border-r border-gray-100 bg-white">
           <CategoryGrid
             selectedCategory={selectedCategory}
             onCategorySelect={setSelectedCategory}
@@ -155,7 +155,7 @@ if (isAdmin) {
           </div>
 
           {/* Products */}
-          <section className="px-4 py-1 overflow-y-auto">
+          <section className="px-2 py-1 overflow-y-auto">
             <h2 className="text-lg font-semibold text-gray-900">
               {selectedCategory
                 ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Products`

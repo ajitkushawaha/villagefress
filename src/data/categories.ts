@@ -21,7 +21,7 @@ export const categories: Category[] = [
   },
   {
     id: 'grains',
-    name: 'Grains & Pulses',
+    name: 'Grains',
     icon: '🌾',
     image: 'https://images.pexels.com/photos/1537086/pexels-photo-1537086.jpeg?auto=compress&cs=tinysrgb&w=300'
   },
