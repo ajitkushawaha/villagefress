@@ -6,7 +6,6 @@ import './index.css';
 // 🆕 Add this line to register the service worker
 import {register} from './serviceWorkerRegistration.ts';
 
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
