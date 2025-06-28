@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+
 import { HomePage } from './components/HomePage';
 import { AuthPage } from './components/AuthPage';
 import { Header } from './components/Header';
@@ -7,34 +8,64 @@ import { ProductGrid } from './components/ProductGrid';
 import { Cart } from './components/Cart';
 import { StoreSettings } from './components/StoreSettings';
 import { UserProfile } from './components/UserProfile';
+import { PromoSlider } from './components/PromoSlider';
+import { SkeletonLoader } from './components/SkeletonLoader';
+import { AdminDashboard } from './admin/AdminDashboard';
+
 import { products } from './data/products';
 import { CartItem, Product, Store } from './types';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useAuth } from './hooks/useAuth';
 import { generateWhatsAppMessage, openWhatsApp } from './utils/whatsapp';
-import { PromoSlider } from './components/PromoSlider';
-import { SkeletonLoader } from './components/SkeletonLoader';
-import { AdminDashboard } from './admin/AdminDashboard';
 
 const defaultStore: Store = {
   name: 'Village Store',
   ownerName: 'Store Owner',
   phone: '+9198989898',
   address: 'Khukhundoo Store',
-  whatsappNumber: '+917617028576'
+  whatsappNumber: '+917617028576',
 };
 
 function App() {
+  // --------------------- Auth and State ---------------------
+  const { user, isAdmin, isAuthenticated, login, logout, loading } = useAuth();
+
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [cart, setCart] = useLocalStorage<CartItem[]>('village-fresh-cart', []);
   const [store, setStore] = useLocalStorage<Store>('village-fresh-store', defaultStore);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isStoreSettingsOpen, setIsStoreSettingsOpen] = useState(false);
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
-  const [showLogin, setShowLogin] = useState(false); // ✅ new flag
+  const [showLogin, setShowLogin] = useState(false);
 
-  const { user, isAdmin, isAuthenticated, login, logout, loading } = useAuth();
+  // --------------------- PWA Install Prompt ---------------------
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstall, setShowInstall] = useState(false);
 
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstall(true);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const result = await deferredPrompt.userChoice;
+    if (result.outcome === 'accepted') {
+      console.log('✅ PWA installed');
+    }
+    setDeferredPrompt(null);
+    setShowInstall(false);
+  };
+
+  // --------------------- Logic ---------------------
   const filteredProducts = useMemo(() => {
     if (!selectedCategory) return products;
     return products.filter(product => product.category === selectedCategory);
@@ -81,24 +112,41 @@ function App() {
     setIsUserProfileOpen(false);
   };
 
+  // --------------------- Conditional Renders ---------------------
+
+  // 1. Show loading screen during auth check
   if (loading) return <SkeletonLoader />;
+
+  // 2. Admin user? Show admin dashboard
   if (isAdmin) return <AdminDashboard />;
 
-  // ✅ Not authenticated
+  // 3. Not authenticated? Show home/login
   if (!isAuthenticated) {
     return showLogin ? (
       <AuthPage onBack={() => setShowLogin(false)} onLogin={handleLogin} />
     ) : (
       <HomePage
-        onGetStarted={() => setShowLogin(true)} // 🔁 redirect to login on explore
+        onGetStarted={() => setShowLogin(true)}
         onLogin={() => setShowLogin(true)}
       />
     );
   }
 
-  // ✅ Authenticated users (non-admin)
+  // --------------------- Main App UI ---------------------
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* PWA Install Button */}
+      {showInstall && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <button
+            onClick={handleInstall}
+            className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl hover:scale-105 transition-all duration-300 animate-pulse"
+          >
+            📲 Install Village Store App
+          </button>
+        </div>
+      )}
+
       <Header
         cart={cart}
         store={store}
@@ -110,7 +158,10 @@ function App() {
 
       <main className="flex max-w-7xl mx-auto w-full">
         <aside className="w-1/5 border-r border-gray-100 bg-white">
-          <CategoryGrid selectedCategory={selectedCategory} onCategorySelect={setSelectedCategory} />
+          <CategoryGrid
+            selectedCategory={selectedCategory}
+            onCategorySelect={setSelectedCategory}
+          />
         </aside>
 
         <div className="flex-1 flex flex-col min-w-0 bg-gray-50">
@@ -161,7 +212,7 @@ function App() {
         />
       )}
 
-      <div className="h-20" />
+      <div className="h-20" /> {/* spacing for mobile footer space */}
     </div>
   );
 }
