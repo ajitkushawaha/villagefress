@@ -81,10 +81,7 @@ function App() {
     setIsUserProfileOpen(false);
   };
 
-  
-  // ✅ Show loading screen while Firebase checks auth
   if (loading) return <SkeletonLoader />;
-// ✅ Show admin dashboard if user is admin
   if (isAdmin) return <AdminDashboard />;
 
   // ✅ Not authenticated
