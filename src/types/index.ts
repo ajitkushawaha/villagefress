@@ -31,12 +31,14 @@ export interface Store {
 }
 
 export interface User {
+  displayName: string | undefined;
   id: string;
   name: string;
   email?: string;
   phone?: string;
   avatar?: string;
   provider: 'google' | 'phone';
+  photoURL?: string;
 }
 
 export interface AuthState {
@@ -44,3 +46,4 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
 }
+

@@ -14,7 +14,7 @@ export function UserProfile({ user, onLogout, onClose, isOpen }: UserProfileProp
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50">
-      <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[80vh] overflow-hidden">
+      <div className="fixed top-0 max-w-60 right-0 bg-white rounded-t-2xl max-h-[80vh] overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900">Profile</h2>
           <button
@@ -28,20 +28,21 @@ export function UserProfile({ user, onLogout, onClose, isOpen }: UserProfileProp
         <div className="p-4 space-y-6">
           {/* User Info */}
           <div className="flex items-center space-x-4">
-            {user.avatar ? (
+            {user.photoURL ? (
               <img
-                src={user.avatar}
-                alt={user.name}
+                src={user.photoURL}
+                alt={user.displayName}
                 className="w-16 h-16 rounded-full object-cover"
               />
             ) : (
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
                 <User className="w-8 h-8 text-emerald-600" />
+                 <p>{user.displayName}</p>
               </div>
             )}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
-              <p className="text-sm text-gray-600 capitalize">{user.provider} account</p>
+              <h3 className="text-lg font-semibold text-gray-900">{user.displayName}</h3>
+              <p className="text-sm text-gray-600 capitalize">{user.provider}</p>
             </div>
           </div>
 

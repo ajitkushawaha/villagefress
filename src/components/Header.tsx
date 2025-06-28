@@ -16,35 +16,40 @@ export function Header({ cart, store, user, onCartClick, onStoreSettingsClick, o
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
-      <div className="max-w-md mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+      <div className="w-full  px-4 py-3 flex items-center justify-center " >
+        <div className="flex items-center justify-between w-4/5 ">
+          {/* Logo & Store Info */}
+          <div className="flex items-center gap-2 min-w-0">
             <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">🌱</span>
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-gray-900">VillageFresh</h1>
-              <div className="flex items-center space-x-1 text-xs text-gray-600">
-                <MapPin className="w-3 h-3" />
-                <span className="truncate max-w-32">{store.name}</span>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-lg font-bold text-gray-900 truncate">VillageFresh</h1>
+              <div className="flex items-center gap-1 text-xs text-gray-600">
+                <MapPin className="w-3 h-3 shrink-0" />
+                <span className="truncate max-w-[100px] sm:max-w-[150px]">{store.name}</span>
               </div>
             </div>
           </div>
-          
-          <div className="flex items-center space-x-3">
+
+          {/* User, Settings, Cart */}
+          <div className="flex items-center gap-3 shrink-0">
             {user ? (
               <button
                 onClick={onUserClick}
                 className="relative p-2 text-gray-600 hover:text-emerald-600 transition-colors"
               >
-                {user.avatar ? (
+                {user.photoURL ? (
                   <img
-                    src={user.avatar}
-                    alt={user.name}
+                    src={user.photoURL}
+                    alt={user.displayName}
                     className="w-6 h-6 rounded-full object-cover"
                   />
                 ) : (
-                  <User className="w-6 h-6" />
+                  <div className="flex flex-col items-center text-center text-[10px] leading-none">
+                    <User className="w-5 h-5" />
+                    <p className="truncate max-w-[60px]">{user.displayName}</p>
+                  </div>
                 )}
               </button>
             ) : (
@@ -55,7 +60,7 @@ export function Header({ cart, store, user, onCartClick, onStoreSettingsClick, o
                 <Settings className="w-5 h-5" />
               </button>
             )}
-            
+
             <button
               onClick={onCartClick}
               className="relative p-2 text-gray-600 hover:text-emerald-600 transition-colors"

@@ -25,12 +25,16 @@ Thank you! 🙏`;
 }
 
 export function openWhatsApp(whatsappNumber: string, message: string) {
-  // Remove any non-digit characters from the phone number
   const cleanNumber = whatsappNumber.replace(/\D/g, '');
-  
-  // Create WhatsApp URL
-  const whatsappUrl = `https://wa.me/${cleanNumber}?text=${message}`;
-  
-  // Open WhatsApp
-  window.open(whatsappUrl, '_blank');
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  let url = '';
+
+  if (isMobile) {
+    url = `whatsapp://send?phone=${cleanNumber}&text=${message}`;
+  } else {
+    url = `https://web.whatsapp.com/send?phone=${cleanNumber}&text=${message}`;
+  }
+
+  window.open(url, '_blank');
 }

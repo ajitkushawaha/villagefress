@@ -41,7 +41,7 @@ export function ProductCard({ product, cartItem, onAddToCart, onUpdateQuantity }
         )}
       </div>
       
-      <div className="p-4">
+      <div className="p-2">
         <h3 className="font-semibold text-gray-900 text-sm mb-1 leading-tight">
           {product.name}
         </h3>

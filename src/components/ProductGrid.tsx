@@ -1,6 +1,7 @@
 import React from 'react';
 import { ProductCard } from './ProductCard';
 import { Product, CartItem } from '../types';
+import { PromoSlider } from './PromoSlider';
 
 interface ProductGridProps {
   products: Product[];
@@ -16,7 +17,7 @@ export function ProductGrid({ products, cart, onAddToCart, onUpdateQuantity }: P
 
   if (products.length === 0) {
     return (
-      <div className="px-4 py-8 text-center">
+      <div className=" py-8 text-center">
         <div className="text-6xl mb-4">🛒</div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">No products found</h3>
         <p className="text-gray-600">Try selecting a different category or check back later.</p>
@@ -25,8 +26,9 @@ export function ProductGrid({ products, cart, onAddToCart, onUpdateQuantity }: P
   }
 
   return (
-    <div className="px-4 pb-6">
-      <div className="grid grid-cols-2 gap-4">
+    <div className=" pb-6">
+     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-4">
+ 
         {products.map(product => (
           <ProductCard
             key={product.id}

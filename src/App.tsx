@@ -12,13 +12,16 @@ import { CartItem, Product, Store } from './types';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useAuth } from './hooks/useAuth';
 import { generateWhatsAppMessage, openWhatsApp } from './utils/whatsapp';
+import { PromoSlider } from './components/PromoSlider';
+import { SkeletonLoader } from './components/SkeletonLoader';
+import { AdminDashboard } from './admin/AdminDashboard';
 
 const defaultStore: Store = {
   name: 'Village Store',
   ownerName: 'Store Owner',
-  phone: '+919876543210',
-  address: 'Village Address',
-  whatsappNumber: '+919876543210'
+  phone: '+9198989898',
+  address: 'Khukhundoo Store',
+  whatsappNumber: '+917617028576'
 };
 
 type AppView = 'home' | 'auth' | 'shop';
@@ -31,8 +34,8 @@ function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isStoreSettingsOpen, setIsStoreSettingsOpen] = useState(false);
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
-  
-  const { user, isAuthenticated, login, logout } = useAuth();
+
+  const { user, isAdmin, isAuthenticated, login, logout, loading } = useAuth();
 
   const filteredProducts = useMemo(() => {
     if (!selectedCategory) return products;
@@ -41,9 +44,9 @@ function App() {
 
   const addToCart = (product: Product) => {
     setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.product.id === product.id);
+      const existingItem = prevCart.find((item: CartItem) => item.product.id === product.id);
       if (existingItem) {
-        return prevCart.map(item =>
+        return prevCart.map((item: CartItem) =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
@@ -69,11 +72,11 @@ function App() {
 
   const handleOrderViaWhatsApp = () => {
     if (cart.length === 0) return;
-    
+
     const total = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
     const message = generateWhatsAppMessage(cart, store, total);
     openWhatsApp(store.whatsappNumber, message);
-    
+
     // Clear cart after sending order
     setCart([]);
     setIsCartOpen(false);
@@ -97,24 +100,32 @@ function App() {
     setCurrentView('home');
     setIsUserProfileOpen(false);
   };
+if (isAdmin) {
+  return <AdminDashboard />;
+}
+  // 👇 Show loading while Firebase auth checks status
+  if (loading) return <SkeletonLoader />;
 
-  if (currentView === 'home') {
+  // 👇 Not logged in? Show home or auth page
+  if (!isAuthenticated) {
     return (
-      <HomePage
-        onGetStarted={handleGetStarted}
-        onLogin={() => setCurrentView('auth')}
-      />
+      <>
+        {currentView === 'home' && (
+          <HomePage
+            onGetStarted={handleGetStarted}
+            onLogin={() => setCurrentView('auth')}
+          />
+        )}
+        {currentView === 'auth' && (
+          <AuthPage
+            onBack={() => setCurrentView('home')}
+            onLogin={handleLogin}
+          />
+        )}
+      </>
     );
   }
 
-  if (currentView === 'auth') {
-    return (
-      <AuthPage
-        onBack={() => setCurrentView('home')}
-        onLogin={handleLogin}
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -127,30 +138,42 @@ function App() {
         onUserClick={() => setIsUserProfileOpen(true)}
       />
 
-      <main className="max-w-md mx-auto">
-        <CategoryGrid
-          selectedCategory={selectedCategory}
-          onCategorySelect={setSelectedCategory}
-        />
+      <main className="flex max-w-7xl mx-auto w-full">
+        {/* Sidebar */}
+        <aside className="w-1/4 border-r border-gray-100 bg-white">
+          <CategoryGrid
+            selectedCategory={selectedCategory}
+            onCategorySelect={setSelectedCategory}
+          />
+        </aside>
 
-        <div className="mb-4 px-4">
-          <h2 className="text-lg font-semibold text-gray-900">
-            {selectedCategory
-              ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Products`
-              : 'All Products'
-            }
-          </h2>
-          <p className="text-sm text-gray-600">{filteredProducts.length} items available</p>
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col min-w-0 bg-gray-50">
+          {/* Promo Slider */}
+          <div className=" pt-4">
+            <PromoSlider />
+          </div>
+
+          {/* Products */}
+          <section className="px-4 py-1 overflow-y-auto">
+            <h2 className="text-lg font-semibold text-gray-900">
+              {selectedCategory
+                ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Products`
+                : 'All Products'}
+            </h2>
+            <p className="text-sm text-gray-600 mb-2">
+              {filteredProducts.length} items available
+            </p>
+
+            <ProductGrid
+              products={filteredProducts}
+              cart={cart}
+              onAddToCart={addToCart}
+              onUpdateQuantity={updateQuantity}
+            />
+          </section>
         </div>
-
-        <ProductGrid
-          products={filteredProducts}
-          cart={cart}
-          onAddToCart={addToCart}
-          onUpdateQuantity={updateQuantity}
-        />
       </main>
-
       <Cart
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
