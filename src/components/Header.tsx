@@ -1,77 +1,104 @@
 import React from 'react';
-import { ShoppingCart, MapPin, Settings, User } from 'lucide-react';
-import { Store, User as UserType } from '../types';
+import { ShoppingCart, MapPin, Settings, User, Filter } from 'lucide-react';
+import { Store, User as UserType, HeaderTheme } from '../types';
+import { useUserVillageLocation } from '../hooks/useUserVillageLocation';
 
 interface HeaderProps {
   cart: any[];
-  store: Store;
+  store?: Store;
   user: UserType | null;
-  onCartClick: () => void;
-  onStoreSettingsClick: () => void;
+  theme: HeaderTheme;
+  onCartClick?: () => void;
   onUserClick: () => void;
+  onStoreSettingsClick?: () => void;
 }
 
-export function Header({ cart, store, user, onCartClick, onStoreSettingsClick, onUserClick }: HeaderProps) {
+export function Header({
+  cart,
+  store,
+  user,
+  theme,
+  onCartClick,
+  onUserClick,
+  onStoreSettingsClick
+}: HeaderProps) {
   const cartItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const { locationName } = useUserVillageLocation();
+
+  const isGrocery = theme === 'grocery';
+  const isFashion = theme === 'fashion';
+  const isBeauty = theme === 'beauty';
+
+  const themeColors = {
+    icon: isGrocery ? '🌱' : isFashion ? '👗' : '💄',
+    gradient: isGrocery
+      ? 'bg-gradient-to-br from-emerald-500 to-emerald-600'
+      : isFashion
+      ? 'bg-gradient-to-br from-pink-500 to-pink-600'
+      : 'bg-gradient-to-br from-purple-500 to-pink-600',
+    hover: isGrocery ? 'hover:text-emerald-600' : isFashion ? 'hover:text-pink-600' : 'hover:text-purple-600',
+    badge: isGrocery ? 'bg-emerald-500' : isFashion ? 'bg-pink-500' : 'bg-purple-500',
+    border: isGrocery ? 'border-emerald-100' : isFashion ? 'border-pink-100' : 'border-purple-100',
+    title: isGrocery ? 'VillageFresh' : isFashion ? 'Fashion Hub' : 'Beauty Hub',
+    subtitle: isGrocery
+      ? locationName
+      : isFashion
+      ? 'Trendy & Affordable'
+      : 'Glow & Glamour',
+  };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
-      <div className="w-full sm:px-0  py-3 flex items-center sm:justify-between md:justify-center " >
-        <div className="flex items-center justify-between  px-4 w-full md:w-4/5 ">
-          {/* Logo & Store Info */}
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">🌱</span>
+    <header className={`bg-white shadow-sm sticky top-0 z-50 border-b ${themeColors.border}`}>
+      <div className="max-w-md mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Left */}
+          <div className="flex items-center space-x-2">
+            <div className={`w-8 h-8 ${themeColors.gradient} rounded-lg flex items-center justify-center`}>
+              <span className="text-white font-bold text-sm">{themeColors.icon}</span>
             </div>
-            <div className="min-w-0">
-              <h1 className="text-base sm:text-lg font-bold text-gray-900 truncate">VillageFresh</h1>
-              <div className="flex items-center gap-1 text-xs text-gray-600">
-                <MapPin className="w-3 h-3 shrink-0" />
-                <span className="truncate max-w-[100px] sm:max-w-[150px]">{store.name}</span>
+            <div>
+              <h1 className="text-lg font-bold text-gray-900">{themeColors.title}</h1>
+              <div className="flex items-center space-x-1 text-xs text-gray-600">
+                {isGrocery && <MapPin className="w-3 h-3" />}
+                <span className="truncate max-w-[120px]">{themeColors.subtitle}</span>
               </div>
             </div>
           </div>
 
-          {/* User, Settings, Cart */}
-          <div className="flex items-center gap-3 shrink-0">
-            {user ? (
+          {/* Right */}
+          <div className="flex items-center space-x-3">
+            
               <button
                 onClick={onUserClick}
-                className="relative p-2 text-gray-600 hover:text-emerald-600 transition-colors"
+                className={`relative p-2 text-gray-600 ${themeColors.hover} transition-colors`}
               >
-                {user.photoURL ? (
+                {user && (user.photoURL || user.avatar) ? (
                   <img
-                    src={user.photoURL}
-                    alt={user.displayName}
+                    src={user.photoURL || user.avatar}
+                    alt={user.displayName || user.name}
                     className="w-6 h-6 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="flex flex-col items-center text-center text-[10px] leading-none">
-                    <User className="w-5 h-5" />
-                    <p className="truncate max-w-[60px]">{user.displayName}</p>
-                  </div>
+                  <User className="w-6 h-6" />
                 )}
               </button>
-            ) : (
+          
+
+            {onCartClick && (
               <button
-                onClick={onStoreSettingsClick}
-                className="p-2 text-gray-600 hover:text-emerald-600 transition-colors"
+                onClick={onCartClick}
+                className={`relative p-2 text-gray-600 ${themeColors.hover} transition-colors`}
               >
-                <Settings className="w-5 h-5" />
+                <ShoppingCart className="w-6 h-6" />
+                {cartItemsCount > 0 && (
+                  <span
+                    className={`absolute -top-1 -right-1 ${themeColors.badge} text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium`}
+                  >
+                    {cartItemsCount}
+                  </span>
+                )}
               </button>
             )}
-
-            <button
-              onClick={onCartClick}
-              className="relative p-2 text-gray-600 hover:text-emerald-600 transition-colors"
-            >
-              <ShoppingCart className="w-6 h-6" />
-              {cartItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
-                  {cartItemsCount}
-                </span>
-              )}
-            </button>
           </div>
         </div>
       </div>

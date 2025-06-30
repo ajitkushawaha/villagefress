@@ -11,7 +11,7 @@ interface StoreSettingsProps {
 
 export function StoreSettings({ isOpen, onClose, store, onSaveStore }: StoreSettingsProps) {
   const [formData, setFormData] = useState<Store>(store);
-
+  
   const handleSave = () => {
     onSaveStore(formData);
     onClose();

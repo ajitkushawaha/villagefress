@@ -3,7 +3,8 @@ import { ArrowLeft, Mail, Phone, Eye, EyeOff } from 'lucide-react';
 import { createUserWithEmailAndPassword, RecaptchaVerifier, signInWithEmailAndPassword, signInWithPhoneNumber, signInWithPopup, updateProfile } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/firebaseConfig';
 import { saveUserToFirestore } from '../firebase/firebaseStore';
-
+import {useAuth} from '../hooks/useAuth'
+import { useNavigate } from 'react-router-dom';
 // 👇️ Declare recaptchaVerifier on the window object for TypeScript
 declare global {
   interface Window {
@@ -11,19 +12,17 @@ declare global {
   }
 }
 
-interface AuthPageProps {
-  onBack: () => void;
-  onLogin: (user: any) => void;
-}
 
-export function AuthPage({ onBack, onLogin }: AuthPageProps) {
+
+ function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [authMethod, setAuthMethod] = useState<'email' | 'phone'>('email');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState<any>(null);
-
+  const {login}= useAuth()
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -45,8 +44,9 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       console.log('Google user:', user);
-      onLogin(user);
+      login(user);
       saveUserToFirestore(user);
+      navigate('/shop')
 
     } catch (error) {
       console.error('Google Sign-In Error:', error);
@@ -86,9 +86,9 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
       } else {
         const result = await confirmationResult.confirm(formData.otp);
         const user = result.user;
-        onLogin(user);
+        login(user);
         saveUserToFirestore(user);
-
+        navigate('/shop')
       }
     } catch (error) {
       console.error('Phone auth error:', error);
@@ -123,8 +123,9 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
     }
 
     const user = userCredential.user;
-    onLogin(user);
+    login(user);
     saveUserToFirestore(user);
+    navigate('/shop')
     console.log("User authenticated:", user);
   } catch (error: any) {
     alert(error.message);
@@ -134,7 +135,9 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
   }
 };
 
-
+const onBack =()=>{
+ navigate('/')
+}
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white">
       <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -325,4 +328,4 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
       </div>
     </div>
   );
-}
+} export default AuthPage
