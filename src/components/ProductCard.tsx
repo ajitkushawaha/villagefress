@@ -1,6 +1,7 @@
 import React from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { Product, CartItem } from '../types';
+import { useNavigate } from 'react-router-dom';
 
 interface ProductCardProps {
   product: Product;
@@ -11,7 +12,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, cartItem, onAddToCart, onUpdateQuantity }: ProductCardProps) {
   const quantity = cartItem?.quantity || 0;
-
+  const navigate = useNavigate()
   const handleIncrement = () => {
     if (quantity === 0) {
       onAddToCart(product);
@@ -30,6 +31,7 @@ export function ProductCard({ product, cartItem, onAddToCart, onUpdateQuantity }
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
       <div className="aspect-square relative overflow-hidden">
         <img
+          onClick={() => navigate(`/shop/product/${product.id}`)}
           src={product.image}
           alt={product.name}
           className="w-full h-full object-cover"
@@ -39,22 +41,7 @@ export function ProductCard({ product, cartItem, onAddToCart, onUpdateQuantity }
             {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
           </div>
         )}
-      </div>
-      
-      <div className="p-2">
-        <h3 className="font-semibold text-gray-900 text-sm mb-1 leading-tight">
-          {product.name}
-        </h3>
-        <p className="text-xs text-gray-600 mb-2">{product.unit}</p>
-        
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <span className="font-bold text-gray-900">₹{product.price}</span>
-            {product.originalPrice && (
-              <span className="text-xs text-gray-500 line-through">₹{product.originalPrice}</span>
-            )}
-          </div>
-          
+         <div className='absolute bottom-0 right-2'>
           {quantity === 0 ? (
             <button
               onClick={handleIncrement}
@@ -81,6 +68,23 @@ export function ProductCard({ product, cartItem, onAddToCart, onUpdateQuantity }
               </button>
             </div>
           )}
+          </div>
+      </div>
+      
+      <div className="p-2">
+        <h3 className="font-semibold text-gray-900 text-sm mb-1 leading-tight">
+          {product.name}
+        </h3>
+        <p className="text-xs text-gray-600 mb-2">{product.unit}</p>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <span className="font-bold text-gray-900">₹{product.price}</span>
+            {product.originalPrice && (
+              <span className="text-xs text-gray-500 line-through">₹{product.originalPrice}</span>
+            )}
+          </div>
+         
         </div>
       </div>
     </div>

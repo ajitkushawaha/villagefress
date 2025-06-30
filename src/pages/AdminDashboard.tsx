@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../data/supabase'; // your supabase client
 import {useAuth} from '../hooks/useAuth'
-export function AdminDashboard() {
+
+const  AdminDashboard =()=> {
     const [products, setProducts] = useState<any[]>([]);
     const {logout} = useAuth()
     const [form, setForm] = useState({
@@ -176,3 +177,4 @@ export function AdminDashboard() {
         </div>
     );
 }
+ export default AdminDashboard
