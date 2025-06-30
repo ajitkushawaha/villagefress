@@ -16,14 +16,13 @@ import { products } from '../data/products';
 import { CartItem, Product, Store } from '../types';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '../hooks/useAuth';
-import { generateWhatsAppMessage, openWhatsApp } from '../utils/whatsapp';
 
-import { useUserVillageLocation } from '../hooks/useUserVillageLocation';
 // import { LocationRestrictionModal } from '../components/LocationRestrictionModal';
 import { BottomTabBar } from '../components/BottomTabBar';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
 import { useOrderViaWhatsApp } from '../hooks/useOrderViaWhatsApp';
+import { Search } from 'lucide-react';
 
 const defaultStore: Store = {
   name: 'Village Store',
@@ -48,8 +47,6 @@ function Shop() {
 
   // --------------------- PWA Install Prompt ---------------------
 
-  const { matchedVillage, geoLoading, allVillages, locationName, setMatchedVillage } = useUserVillageLocation();
-  const showRestrictedModal = !geoLoading && matchedVillage === null;
   const { cart, addToCart, updateQuantity, clearCart } = useCartStore();
   const { handleOrder } = useOrderViaWhatsApp(store, () => setIsCartOpen(false));
 
@@ -102,6 +99,19 @@ function Shop() {
         onStoreSettingsClick={() => navigate('/store-settings')}
         onUserClick={() => setIsUserProfileOpen(true)}
       />
+         <section className="px-4 py-4 bg-gray-50">
+        <div className="max-w-md mx-auto">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              onClick={() => navigate('/search')}
+              type="text"
+              placeholder="Search beauty products..."
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
+            />
+          </div>
+        </div>
+      </section>
       <main className="flex max-w-7xl mx-auto w-full">
         <aside className="w-1/5 border-r border-gray-100 bg-white">
           <CategoryGrid
