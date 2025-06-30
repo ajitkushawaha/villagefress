@@ -2,6 +2,7 @@ import React from 'react';
 import { ShoppingCart, MapPin, Settings, User, Filter } from 'lucide-react';
 import { Store, User as UserType, HeaderTheme } from '../types';
 import { useUserVillageLocation } from '../hooks/useUserVillageLocation';
+import { useAuth } from '../hooks/useAuth';
 
 interface HeaderProps {
   cart: any[];
@@ -16,7 +17,6 @@ interface HeaderProps {
 export function Header({
   cart,
   store,
-  user,
   theme,
   onCartClick,
   onUserClick,
@@ -28,7 +28,8 @@ export function Header({
   const isGrocery = theme === 'grocery';
   const isFashion = theme === 'fashion';
   const isBeauty = theme === 'beauty';
-
+  const {user} = useAuth()
+  console.log("user", user?.photoURL)
   const themeColors = {
     icon: isGrocery ? '🌱' : isFashion ? '👗' : '💄',
     gradient: isGrocery
@@ -46,7 +47,6 @@ export function Header({
       ? 'Trendy & Affordable'
       : 'Glow & Glamour',
   };
-
   return (
     <header className={`bg-white shadow-sm sticky top-0 z-50 border-b ${themeColors.border}`}>
       <div className="max-w-md mx-auto px-4 py-3">
@@ -72,10 +72,10 @@ export function Header({
                 onClick={onUserClick}
                 className={`relative p-2 text-gray-600 ${themeColors.hover} transition-colors`}
               >
-                {user && (user.photoURL || user.avatar) ? (
+                {user && (user?.photoURL || user.avatar) ? (
                   <img
-                    src={user.photoURL || user.avatar}
-                    alt={user.displayName || user.name}
+                    src={user?.photoURL}
+                    alt={user.displayName}
                     className="w-6 h-6 rounded-full object-cover"
                   />
                 ) : (
