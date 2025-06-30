@@ -12,7 +12,7 @@ import { ProductDetailWrapper } from '../components/ProductDetailWrapper';
 import { SearchPage } from '../pages/SearchPage';
 import { useCartStore } from '../store/cartStore';
 import { useState } from 'react';
-import { allProducts } from '../data/products';
+// import { allProducts } from '../data/products';
 import { DeliveryAddressPage } from '../pages/DeliveryAddressPage';
 import { OrderConfirmationPage } from '../pages/OrderConfirmationPage';
 import { PaymentPage } from '../pages/PaymentPage';
