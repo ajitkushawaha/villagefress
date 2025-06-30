@@ -46,7 +46,7 @@ declare global {
       console.log('Google user:', user);
       login(user);
       saveUserToFirestore(user);
-      navigate('/shop')
+      navigate('/home')
 
     } catch (error) {
       console.error('Google Sign-In Error:', error);
@@ -88,7 +88,7 @@ declare global {
         const user = result.user;
         login(user);
         saveUserToFirestore(user);
-        navigate('/shop')
+        navigate('/home')
       }
     } catch (error) {
       console.error('Phone auth error:', error);
@@ -125,7 +125,7 @@ declare global {
     const user = userCredential.user;
     login(user);
     saveUserToFirestore(user);
-    navigate('/shop')
+    navigate('/home')
     console.log("User authenticated:", user);
   } catch (error: any) {
     alert(error.message);

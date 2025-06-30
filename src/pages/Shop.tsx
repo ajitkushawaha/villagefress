@@ -48,47 +48,17 @@ function Shop() {
   const [showLogin, setShowLogin] = useState(false);
 
   // --------------------- PWA Install Prompt ---------------------
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [showInstall, setShowInstall] = useState(false);
 
   const { matchedVillage, geoLoading, allVillages, locationName, setMatchedVillage } = useUserVillageLocation();
   const showRestrictedModal = !geoLoading && matchedVillage === null;
   const { cart, addToCart, updateQuantity, clearCart } = useCartStore();
   const { handleOrder } = useOrderViaWhatsApp(store, () => setIsCartOpen(false));
 
-
-
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e: any) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstall(true);
-    };
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
-  }, []);
-
-  const handleInstall = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const result = await deferredPrompt.userChoice;
-    if (result.outcome === 'accepted') {
-      console.log('✅ PWA installed');
-    }
-    setDeferredPrompt(null);
-    setShowInstall(false);
-  };
-
   // --------------------- Logic ---------------------
   const filteredProducts = useMemo(() => {
     if (!selectedCategory) return products;
     return products.filter(product => product.category === selectedCategory);
   }, [selectedCategory]);
-
-
-
 
   const handleLogin = (userData: any) => {
     login(userData);
@@ -123,17 +93,7 @@ function Shop() {
   // --------------------- Main App UI ---------------------
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* PWA Install Button */}
-      {showInstall && (
-        <div className="fixed bottom-6 right-6 z-50">
-          <button
-            onClick={handleInstall}
-            className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl hover:scale-105 transition-all duration-300 animate-pulse"
-          >
-            📲 Install Village Store App
-          </button>
-        </div>
-      )}
+     
       <Header
         theme="grocery"
         cart={cart}
