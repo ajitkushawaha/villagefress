@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRight, Clock, Truck, Shield, Star, MapPin, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 
 
 const HomePage =()=> {
+    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+    const [showInstall, setShowInstall] = useState(false);
+  
   const categories = [
     { name: 'Vegetables & Fruits', icon: '🥬', color: 'bg-green-100' },
     { name: 'Dairy & Breakfast', icon: '🥛', color: 'bg-blue-100' },
@@ -23,6 +26,29 @@ const navigate = useNavigate()
     { name: 'Fresh Apples', price: '₹120', originalPrice: '₹140', image: 'https://images.pexels.com/photos/102104/pexels-photo-102104.jpeg?auto=compress&cs=tinysrgb&w=200', time: '20 MINS' },
   ];
 
+   useEffect(() => {
+      const handleBeforeInstallPrompt = (e: any) => {
+        e.preventDefault();
+        setDeferredPrompt(e);
+        setShowInstall(true);
+      };
+      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      return () => {
+        window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      };
+    }, []);
+    
+   const handleInstall = async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      if (result.outcome === 'accepted') {
+        console.log('✅ PWA installed');
+      }
+      setDeferredPrompt(null);
+      setShowInstall(false);
+    };
+  
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -50,7 +76,7 @@ const navigate = useNavigate()
           </div>
         </div>
       </header>
-
+     
       {/* Hero Banner */}
       <section className="px-4 py-6 bg-gradient-to-r from-emerald-500 to-emerald-600">
         <div className="max-w-md mx-auto">
@@ -96,7 +122,17 @@ const navigate = useNavigate()
           </div>
         </div>
       </section>
-
+       {/* PWA Install Button */}
+            {showInstall && (
+              <div className="fixed bottom-6 right-6 z-50">
+                <button
+                  onClick={handleInstall}
+                  className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl hover:scale-105 transition-all duration-300 animate-pulse"
+                >
+                  📲 Install Village Store App
+                </button>
+              </div>
+            )}
       {/* Categories */}
       <section className="px-4 py-6">
         <div className="max-w-md mx-auto">
