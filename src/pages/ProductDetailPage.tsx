@@ -268,7 +268,7 @@ export function ProductDetailPage({
               <Clock className="w-5 h-5 text-emerald-600" />
               <div>
                 <p className="font-medium text-emerald-800">Express Delivery</p>
-                <p className="text-sm text-emerald-600">Delivered in 8 minutes</p>
+                <p className="text-sm text-emerald-600">Delivered in 20 minutes</p>
               </div>
             </div>
             <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
@@ -282,7 +282,7 @@ export function ProductDetailPage({
               <Truck className="w-5 h-5 text-orange-600" />
               <div>
                 <p className="font-medium text-orange-800">Free Delivery</p>
-                <p className="text-sm text-orange-600">On orders above ₹99</p>
+                <p className="text-sm text-orange-600">On orders above ₹199</p>
               </div>
             </div>
           </div>

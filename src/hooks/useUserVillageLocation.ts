@@ -26,39 +26,37 @@ export const useUserVillageLocation = () => {
   const [geoLoading, setGeoLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
-
   useEffect(() => {
-  const savedVillageId = localStorage.getItem('manual-village-id');
-  if (savedVillageId) {
-    const savedVillage = villages.find(v => v.id === Number(savedVillageId));
-    if (savedVillage) {
-      setMatchedVillage(savedVillage);
-      setGeoLoading(false);
-      return;
+    const savedVillageId = localStorage.getItem('manual-village-id');
+    if (savedVillageId) {
+      const savedVillage = villages.find(v => v.id === Number(savedVillageId));
+      if (savedVillage) {
+        setMatchedVillage(savedVillage);
+        setGeoLoading(false);
+        return;
+      }
     }
-  }
 
-  // Fallback: use geolocation
-  const fetchLocation = async () => {
-    try {
-      const pos = await getUserLocation();
-      const name = await reverseGeocode(
-        pos.coords.latitude,
-        pos.coords.longitude
-      );
-      setLocationName(name);
-      const match = matchVillage(name);
-      setMatchedVillage(match || null);
-    } catch (err: any) {
-      setError(err.message || 'Location fetch error');
-    } finally {
-      setGeoLoading(false);
-    }
-  };
+    // Fallback: use geolocation
+    const fetchLocation = async () => {
+      try {
+        const pos = await getUserLocation();
+        const name = await reverseGeocode(
+          pos.coords.latitude,
+          pos.coords.longitude
+        );
+        setLocationName(name);
+        const match = matchVillage(name);
+        setMatchedVillage(match || null);
+      } catch (err: any) {
+        setError(err.message || 'Location fetch error');
+      } finally {
+        setGeoLoading(false);
+      }
+    };
 
-  fetchLocation();
-}, []);
+    fetchLocation();
+  }, []);
 
   // ✅ Request geolocation with high accuracy
   const getUserLocation = (): Promise<GeolocationPosition> => {
@@ -75,20 +73,21 @@ export const useUserVillageLocation = () => {
   };
 
   // ✅ Reverse geocoding to get village or town name
-  const reverseGeocode = async (lat: number, lon: number): Promise<string> => {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`
-    );
-    const data = await response.json();
-    console.log(data)
-    return (
-      data.address?.village ||
-      data.address?.town ||
-      data.address?.city ||
-      data.address?.county ||
-      'Unknown'
-    );
-  };
+ const reverseGeocode = async (lat: number, lon: number): Promise<string> => {
+  const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`;
+  const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+
+  const res = await fetch(proxyUrl);
+  const data = await res.json();
+   console.log(data)
+  return (
+    data.address?.village ||
+    data.address?.town ||
+    data.address?.city ||
+    data.address?.county ||
+    'Unknown'
+  );
+};
 
   // ✅ Try to match village with service list
   const matchVillage = (name: string): Village | undefined => {
@@ -96,29 +95,6 @@ export const useUserVillageLocation = () => {
       v.name.toLowerCase().includes(name.toLowerCase())
     );
   };
-
-  useEffect(() => {
-    const fetchLocation = async () => {
-      try {
-        const pos = await getUserLocation();
-        const name = await reverseGeocode(
-          pos.coords.latitude,
-          pos.coords.longitude
-        );
-        console.log('name', pos)
-        setLocationName(name);
-
-        const match = matchVillage(name);
-        setMatchedVillage(match || null);
-      } catch (err: any) {
-        setError(err.message || 'Location fetch error');
-      } finally {
-        setGeoLoading(false);
-      }
-    };
-
-    fetchLocation();
-  }, []);
 
   return {
     locationName,

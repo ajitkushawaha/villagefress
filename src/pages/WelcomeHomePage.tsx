@@ -3,6 +3,7 @@ import { Search, User, ShoppingCart, Mic, MapPin } from 'lucide-react';
 import { groceryItems, vegetableItems, fashionItems, beautyItems } from '../data/products'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { VillageSelectionModal } from '../components/VillageSelectionModal';
 
 
 
@@ -272,7 +273,7 @@ export function WelcomeHomePage() {
             </div>
           </div>
         </section>
-
+         <VillageSelectionModal />
         <div className="h-20"></div>
       </div>
     </div>

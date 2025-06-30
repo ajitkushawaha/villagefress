@@ -19,12 +19,11 @@ import { useAuth } from '../hooks/useAuth';
 import { generateWhatsAppMessage, openWhatsApp } from '../utils/whatsapp';
 
 import { useUserVillageLocation } from '../hooks/useUserVillageLocation';
-import { LocationRestrictionModal } from '../components/LocationRestrictionModal';
+// import { LocationRestrictionModal } from '../components/LocationRestrictionModal';
 import { BottomTabBar } from '../components/BottomTabBar';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
 import { useOrderViaWhatsApp } from '../hooks/useOrderViaWhatsApp';
-
 
 const defaultStore: Store = {
   name: 'Village Store',
@@ -130,7 +129,7 @@ function Shop() {
               onAddToCart={addToCart}
               onUpdateQuantity={updateQuantity}
             />
-            <LocationRestrictionModal
+            {/* <LocationRestrictionModal
               isOpen={showRestrictedModal}
               onClose={() => console.log('User acknowledged restriction')}
               locationName={locationName}
@@ -139,7 +138,7 @@ function Shop() {
                 setMatchedVillage(village);
                 localStorage.setItem('manual-village-id', village.id.toString());
               }}
-            />
+            /> */}
           </section>
         </div>
         <BottomTabBar
