@@ -17,7 +17,7 @@ export function PaymentPage() {
   const navigate = useNavigate();
 
   const [selectedPayment, setSelectedPayment] = useState<'upi' | 'cod' | null>(null);
-  const [upiId, setUpiId] = useState('merchant@paytm');
+  const [upiId, setUpiId] = useState('ajitkushawaha@ybl');
   const [copied, setCopied] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
