@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Plus, Edit, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useOrderFlowStore } from '../store/orderFlowStore';
@@ -20,13 +20,14 @@ export function DeliveryAddressPage() {
   const navigate = useNavigate();
   const { setAddress } = useOrderFlowStore();
 
+ console.log(user?.name,"displaname")
   const [addresses, setAddresses] = useState<Address[]>([
     {
       id: '1',
       type: 'home',
-      name: user?.name || 'Ajit Kushwaha',
+      name: user?.name,
       phone: user?.phone || '+91 7617028576',
-      address: 'Majhwalia, Majhwalia',
+      address: 'Majhawalia, Majhawalia',
       landmark: 'Near Hanuman Mandir',
       pincode: '274501',
       isDefault: true,
@@ -85,7 +86,7 @@ export function DeliveryAddressPage() {
     setEditingAddress(address);
     setFormData({
       type: address.type,
-      name: address.name,
+      name: address?.name,
       phone: address.phone,
       address: address.address,
       landmark: address.landmark || '',

@@ -1,8 +1,7 @@
-import React from 'react';
-import { ShoppingCart, MapPin, Settings, User, Filter } from 'lucide-react';
+import { ShoppingCart, MapPin, User } from 'lucide-react';
 import { Store, User as UserType, HeaderTheme } from '../types';
-import { useUserVillageLocation } from '../hooks/useUserVillageLocation';
 import { useAuth } from '../hooks/useAuth';
+import { useVillageStore } from '../store/villageStore';
 
 interface HeaderProps {
   cart: any[];
@@ -23,8 +22,7 @@ export function Header({
   onStoreSettingsClick
 }: HeaderProps) {
   const cartItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const { locationName } = useUserVillageLocation();
-
+const { selectedVillage } = useVillageStore();
   const isGrocery = theme === 'grocery';
   const isFashion = theme === 'fashion';
   const isBeauty = theme === 'beauty';
@@ -42,11 +40,11 @@ export function Header({
     border: isGrocery ? 'border-emerald-100' : isFashion ? 'border-pink-100' : 'border-purple-100',
     title: isGrocery ? 'VillageFresh' : isFashion ? 'Fashion Hub' : 'Beauty Hub',
     subtitle: isGrocery
-      ? locationName
+      ? selectedVillage?.name
       : isFashion
       ? 'Trendy & Affordable'
       : 'Glow & Glamour',
-  };
+  }; 
   return (
     <header className={`bg-white shadow-sm sticky top-0 z-50 border-b ${themeColors.border}`}>
       <div className="max-w-md mx-auto px-4 py-3">
