@@ -5,9 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { VillageSelectionModal } from '../components/VillageSelectionModal';
 
-
-
-
 export function WelcomeHomePage() {
    const navigate = useNavigate()
    const {user}= useAuth()
