@@ -3,7 +3,7 @@ import Home from '../pages/HomePage';
 import Auth from '../pages/AuthPage';
 import Shop from '../pages/Shop';
 import AdminDashboard from '../pages/AdminDashboard';
-import { PrivateRoute } from './privateRoute';
+import { PrivateRoute } from './PrivateRoute';
 import AdminRoute from './AdminRoute';
 import BeautyPage from '../pages/BeutyPage';
 import FashionPage from '../pages/FashionPage';

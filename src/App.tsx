@@ -4,6 +4,7 @@ import { SimpleToast } from './components/SimpleToast';
 import { useSimpleToast } from './hooks/useSimpleToast';
 import { useCartStore } from './store/cartStore';
 import { useEffect } from 'react';
+import { InstallPrompt } from './components/InstallPrompt';
 
 function App() {
    const { message, visible, showToast } = useSimpleToast();
@@ -16,6 +17,7 @@ function App() {
     <BrowserRouter>
       <AppRoutes />
        <SimpleToast message={message} visible={visible} />
+       <InstallPrompt />
     </BrowserRouter>
   );
 }
