@@ -7,14 +7,14 @@ type TabType = 'shop' | 'home' | 'fashion' | 'beauty';
 export function BottomTabBar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const currentPath = location.pathname.slice(1);
+  const currentPath = location.pathname.split('/')[2]; // get first part after "/"
+const activeTab = ['../home', 'shop', 'fashion', 'beauty'].includes(currentPath)
+  ? (currentPath as TabType)
+  : '../home';
 
-  const activeTab = ['home', 'shop', 'fashion', 'beauty'].includes(currentPath)
-    ? (currentPath as TabType)
-    : 'home';
 
   const tabs = [
-    { id: 'home', label: 'Home', icon: Home, activeColor: 'text-emerald-600', inactiveColor: 'text-gray-500' },
+    { id: '../home', label: 'Home', icon: Home, activeColor: 'text-emerald-600', inactiveColor: 'text-gray-500' },
     { id: 'shop', label: 'Grocery', icon: Grid3X3, activeColor: 'text-emerald-600', inactiveColor: 'text-gray-500' },
     { id: 'fashion', label: 'Fashion', icon: Shirt, activeColor: 'text-pink-600', inactiveColor: 'text-gray-500' },
     { id: 'beauty', label: 'Beauty', icon: Sparkles, activeColor: 'text-purple-600', inactiveColor: 'text-gray-500' }
@@ -52,7 +52,7 @@ export function BottomTabBar() {
             return (
               <button
                 key={tab.id}
-                onClick={() => navigate(`/${tab.id}`)}
+                onClick={() => navigate(`${tab.id}`)}
                 className={`flex flex-col items-center justify-center min-w-16 transition-all duration-200 ${isActive ? 'transform scale-105' : 'hover:scale-105'}`}
               >
                 <div className={`p-2 rounded-xl ${isActive ? 'bg-gradient-to-br from-emerald-50 to-emerald-100 shadow-sm' : 'hover:bg-gray-50'}`}>

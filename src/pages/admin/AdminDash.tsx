@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../data/supabase'; // your supabase client
-import {useAuth} from '../hooks/useAuth'
+import { supabase } from '../../data/supabase'; // your supabase client
+import {useAuth} from '../../hooks/useAuth'
 
-const  AdminDashboard =()=> {
+const  AdminDash =()=> {
     const [products, setProducts] = useState<any[]>([]);
     const {logout} = useAuth()
     const [form, setForm] = useState({
@@ -177,4 +177,4 @@ const  AdminDashboard =()=> {
         </div>
     );
 }
- export default AdminDashboard
+ export default AdminDash

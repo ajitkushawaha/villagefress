@@ -1,75 +1,36 @@
 import React, { useState } from 'react';
-import { Search, User, Star, Heart, Filter } from 'lucide-react';
-import { Store, User as UserType } from '../types';
-import { BottomTabBar } from '../components/BottomTabBar';
+import { Search } from 'lucide-react';
+
 import { useNavigate } from 'react-router-dom';
-import { fashionProducts } from '../data/products';
-import { fashionCategories } from '../data/categories';
-import { useCartStore } from '../store/cartStore';
-import { FashionCard } from '../components/FashionCard';
-import { useAuth } from '../hooks/useAuth';
-import { Header } from '../components/Header';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { Cart } from '../components/Cart';
-import { useOrderViaWhatsApp } from '../hooks/useOrderViaWhatsApp';
-import { UserProfile } from '../components/UserProfile';
+import { fashionProducts } from '../../data/products';
+import { fashionCategories } from '../../data/categories';
+import { useCartStore } from '../../store/cartStore';
+import { FashionCard } from '../../components/shop/FashionCard';
 
 
-
-interface FashionPageProps {
-    user: UserType | null;
-    onUserClick: () => void;
-}
-
-const defaultStore: Store = {
-    name: 'Village Store',
-    ownerName: 'Store Owner',
-    phone: '+9198989898',
-    address: 'Khukhundoo Store',
-    whatsappNumber: '+917617028576',
-};
-
-const FashionPage = ({ onUserClick }: FashionPageProps) => {
-    const { user, logout } = useAuth();
+const FashionPage = () => {
     const navigate = useNavigate()
     const cart = useCartStore(s => s.cart);
     const addToCart = useCartStore(s => s.addToCart);
     const updateQuantity = useCartStore(s => s.updateQuantity);
-    const [store, setStore] = useLocalStorage<Store>('village-fresh-store', defaultStore);
-    const { handleOrder } = useOrderViaWhatsApp(store, () => setIsCartOpen(false));
-    const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
 
     const [selectedCategory, setSelectedCategory] = useState('all');
-    const [isCartOpen, setIsCartOpen] = useState(false);
 
     const filteredProducts = selectedCategory === 'all'
         ? fashionProducts
         : fashionProducts.filter(product => product.category === selectedCategory);
 
 
-    const handleLogout = () => {
-        logout();
-        setIsUserProfileOpen(false);
-    };
     return (
         <div className="min-h-screen bg-white">
-            {/* Header */}
-            <Header
-                theme="fashion"
-                cart={cart} // ✅ Correct usage
-                store={store}
-                user={user}
-                onCartClick={() => setIsCartOpen(true)}
-                onStoreSettingsClick={() => navigate('/store-settings')}
-                onUserClick={() => setIsUserProfileOpen(true)}
-            />
+         
             {/* Search Bar */}
             <section className="px-4 py-4 bg-gray-50">
                 <div className="max-w-md mx-auto">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                         <input
-                            onClick={() => navigate('/search')}
+                            onClick={() => navigate('../search')}
                             type="text"
                             placeholder="Search for fashion items..."
                             className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white"
@@ -147,23 +108,6 @@ const FashionPage = ({ onUserClick }: FashionPageProps) => {
                 </div>
             </section>
 
-            <BottomTabBar
-                navigate={navigate}
-            />
-            <Cart
-                isOpen={isCartOpen}
-                onClose={() => setIsCartOpen(false)}
-                cart={cart}
-                store={store}
-                onUpdateQuantity={updateQuantity}
-                onOrderViaWhatsApp={handleOrder}
-            />
-            <UserProfile
-                user={user}
-                onLogout={handleLogout}
-                onClose={() => setIsUserProfileOpen(false)}
-                isOpen={isUserProfileOpen}
-            />
             <div className="h-20"></div>
         </div>
     );

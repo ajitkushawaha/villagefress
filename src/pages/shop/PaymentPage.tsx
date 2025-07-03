@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import {
   ArrowLeft, Smartphone, Banknote, Copy, Check, ExternalLink
 } from 'lucide-react';
-import { useCartStore } from '../store/cartStore';
-import { useOrderFlowStore } from '../store/orderFlowStore';
-import { Store } from '../types';
+import { useCartStore } from '../../store/cartStore';
+import { useOrderFlowStore } from '../../store/orderFlowStore';
 import { useNavigate } from 'react-router-dom';
-import { useStoreInfo } from '../store/storeInfo';
+import { useStoreInfo } from '../../store/storeInfo';
 
 
 
@@ -47,7 +46,7 @@ export function PaymentPage() {
         status: 'pending'
       });
       setIsProcessing(false);
-      navigate('/confirm-order');
+      navigate('../confirm-order');
     }, 3000);
   };
 
@@ -56,7 +55,7 @@ export function PaymentPage() {
       amount: finalTotal,
       paymentMethod: 'Cash on Delivery'
     });
-    navigate('/confirm-order');
+    navigate('../confirm-order');
   };
 
   const paymentMethods = [

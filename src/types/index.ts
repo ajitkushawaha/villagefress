@@ -39,6 +39,7 @@ export interface User {
   avatar?: string;
   provider: 'google' | 'phone';
   photoURL?: string;
+  admin?: boolean;
 }
 
 export interface AuthState {

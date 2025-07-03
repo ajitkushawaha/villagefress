@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Plus, Edit, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useOrderFlowStore } from '../store/orderFlowStore';
-import { useAuth } from '../hooks/useAuth';
+import { useOrderFlowStore } from '../../store/orderFlowStore';
+import { useAuth } from '../../hooks/useAuth';
 
 interface Address {
   id: string;
@@ -47,7 +47,7 @@ export function DeliveryAddressPage() {
   });
 
   const onBackSafe = () => {
-    window.history.back();
+    navigate('/home');
   };
 
   const resetForm = () => {
@@ -282,7 +282,7 @@ export function DeliveryAddressPage() {
                 <button
                   onClick={() => {
                     setAddress(address);
-                    navigate('/payment');
+                    navigate('../payment');
                   }}
                   className="flex-1 bg-emerald-500 text-white py-3 px-4 rounded-lg"
                 >

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Plus, Minus } from 'lucide-react';
-import { Product, CartItem } from '../types';
+import { Product, CartItem } from '../../types';
 import { useNavigate } from 'react-router-dom';
 
 interface ProductCardProps {

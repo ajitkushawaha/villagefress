@@ -1,6 +1,6 @@
 // components/PromoSlider.tsx
 import React from 'react';
-import { products } from '../data/products';
+import { products } from '../../data/products';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';

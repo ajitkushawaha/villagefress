@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check, MessageCircle, Home, Copy } from 'lucide-react';
-import { useCartStore } from '../store/cartStore';
-import { useOrderFlowStore } from '../store/orderFlowStore';
-import { generateWhatsAppMessage, openWhatsApp } from '../utils/whatsapp';
-import { useStoreInfo } from '../store/storeInfo';
+import { useCartStore } from '../../store/cartStore';
+import { useOrderFlowStore } from '../../store/orderFlowStore';
+import { generateWhatsAppMessage, openWhatsApp } from '../../utils/whatsapp';
+import { useStoreInfo } from '../../store/storeInfo';
 
 export function OrderConfirmationPage() {
   const navigate = useNavigate();

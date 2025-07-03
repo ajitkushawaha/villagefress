@@ -1,9 +1,9 @@
 import React from 'react';
 import { Search, User, ShoppingCart, Mic, MapPin } from 'lucide-react';
-import { groceryItems, vegetableItems, fashionItems, beautyItems } from '../data/products'
+import { groceryItems, vegetableItems, fashionItems, beautyItems } from '../../data/products'
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { VillageSelectionModal } from '../components/VillageSelectionModal';
+import { useAuth } from '../../hooks/useAuth';
+import { VillageSelectionModal } from '../../components/shop/VillageSelectionModal';
 
 export function WelcomeHomePage() {
    const navigate = useNavigate()
@@ -31,42 +31,7 @@ export function WelcomeHomePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50 border-b">
-        <div className="max-w-md mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">🌱</span>
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-gray-900">VillageFresh</h1>
-                <div className="flex items-center space-x-1 text-xs text-gray-600">
-                  <MapPin className="w-3 h-3" />
-                  <span>Delivery in 20 minutes</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-            
-              <button
-                // onClick={onUserClick}
-                className="relative p-2 text-gray-600 hover:text-emerald-600 transition-colors"
-              >
-                {user?.photoURL ? (
-                  <img
-                    src={user.photoURL}
-                    alt={user.displayNamename}
-                    className="w-6 h-6 rounded-full object-cover"
-                  />
-                ) : (
-                  <User className="w-6 h-6" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+   
 
       {/* Search Bar */}
       <section className="px-4 py-4 bg-gray-50">
@@ -74,7 +39,7 @@ export function WelcomeHomePage() {
           <div  className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
-              onClick={() => navigate('/search')}
+              onClick={() => navigate('/home/search')}
               type="text"
               placeholder="Search for products..."
               className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
@@ -101,7 +66,7 @@ export function WelcomeHomePage() {
             
             <div className="grid grid-cols-4 gap-3">
               <button
-                onClick={() => navigate('/shop')}
+                onClick={() => navigate('/home/shop')}
                 className="flex flex-col items-center p-3 rounded-xl border border-gray-100 hover:border-emerald-200 hover:shadow-sm transition-all bg-white transform hover:scale-105"
               >
                 <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center mb-2">
@@ -111,7 +76,7 @@ export function WelcomeHomePage() {
               </button>
               
               <button
-                onClick={() => navigate('/shop')}
+                onClick={() => navigate('/home/shop')}
                 className="flex flex-col items-center p-3 rounded-xl border border-gray-100 hover:border-emerald-200 hover:shadow-sm transition-all bg-white transform hover:scale-105"
               >
                 <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center mb-2">
@@ -121,7 +86,7 @@ export function WelcomeHomePage() {
               </button>
               
               <button
-                onClick={() => navigate('/fashion')}
+                onClick={() => navigate('/home/fashion')}
                 className="flex flex-col items-center p-3 rounded-xl border border-gray-100 hover:border-emerald-200 hover:shadow-sm transition-all bg-white transform hover:scale-105"
               >
                 <div className="w-12 h-12 bg-pink-100 rounded-2xl flex items-center justify-center mb-2">
@@ -131,7 +96,7 @@ export function WelcomeHomePage() {
               </button>
               
               <button
-                onClick={() => navigate('/beauty')}
+                onClick={() => navigate('/home/beauty')}
                 className="flex flex-col items-center p-3 rounded-xl border border-gray-100 hover:border-emerald-200 hover:shadow-sm transition-all bg-white transform hover:scale-105"
               >
                 <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center mb-2">
@@ -153,7 +118,7 @@ export function WelcomeHomePage() {
               <h3 className="text-xl font-bold text-gray-900">Fresh Grocery</h3>
             </div>
             <button
-              onClick={() => navigate('/shop')}
+              onClick={() => navigate('/home/shop')}
               className="text-emerald-600 font-medium text-sm hover:text-emerald-700 transition-colors"
             >
               View All
@@ -164,7 +129,7 @@ export function WelcomeHomePage() {
               <ProductCard 
                 key={item.id} 
                 item={item} 
-                onClick={() => navigate(item.category)}
+                onClick={() => navigate(`/home${item.category}`)}
               />
             ))}
           </div>
@@ -178,7 +143,7 @@ export function WelcomeHomePage() {
               <h3 className="text-xl font-bold text-gray-900">Fresh Vegetables</h3>
             </div>
             <button
-              onClick={() => navigate('/shop')}
+              onClick={() => navigate('/home/shop')}
               className="text-emerald-600 font-medium text-sm hover:text-emerald-700 transition-colors"
             >
               View All
@@ -189,7 +154,7 @@ export function WelcomeHomePage() {
               <ProductCard 
                 key={item.id} 
                 item={item} 
-                onClick={() => navigate(item.category)}
+                onClick={() => navigate(`/home${item.category}`)}
               />
             ))}
           </div>
@@ -203,7 +168,7 @@ export function WelcomeHomePage() {
               <h3 className="text-xl font-bold text-gray-900">Fashion</h3>
             </div>
             <button
-              onClick={() => navigate('/fashion')}
+              onClick={() => navigate('/home/fashion')}
               className="text-pink-600 font-medium text-sm hover:text-pink-700 transition-colors"
             >
               View All
@@ -214,7 +179,7 @@ export function WelcomeHomePage() {
               <ProductCard 
                 key={item.id} 
                 item={item} 
-                onClick={() => navigate(item.category)}
+                onClick={() => navigate(`/home${item.category}`)}
               />
             ))}
           </div>
@@ -228,7 +193,7 @@ export function WelcomeHomePage() {
               <h3 className="text-xl font-bold text-gray-900">Beauty</h3>
             </div>
             <button
-              onClick={() => navigate('/beauty')}
+              onClick={() => navigate('/home/beauty')}
               className="text-purple-600 font-medium text-sm hover:text-purple-700 transition-colors"
             >
               View All
@@ -239,7 +204,7 @@ export function WelcomeHomePage() {
               <ProductCard 
                 key={item.id} 
                 item={item} 
-                onClick={() => navigate(item.category)}
+                onClick={() => navigate(`/home${item.category}`)}
               />
             ))}
           </div>
