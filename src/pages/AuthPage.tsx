@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Mail, Phone, Eye, EyeOff } from 'lucide-react';
 import { createUserWithEmailAndPassword, RecaptchaVerifier, signInWithEmailAndPassword, signInWithPhoneNumber, signInWithPopup, updateProfile } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase/firebaseConfig';
+import { auth, db, googleProvider } from '../firebase/firebaseConfig';
 import { saveUserToFirestore } from '../firebase/firebaseStore';
-import {useAuth} from '../hooks/useAuth'
+import { useAuth } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 // 👇️ Declare recaptchaVerifier on the window object for TypeScript
 declare global {
   interface Window {
@@ -12,16 +13,15 @@ declare global {
   }
 }
 
-
-
- function AuthPage() {
+function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [authMethod, setAuthMethod] = useState<'email' | 'phone'>('email');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState<any>(null);
-  const {login}= useAuth()
+  const { login, isAdmin } = useAuth()
+  
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: '',
@@ -39,37 +39,74 @@ declare global {
   };
 
   const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      console.log('Google user:', user);
-      login(user);
-      saveUserToFirestore(user);
-      navigate('/home')
+  setIsLoading(true);
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const firebaseUser = result.user;
 
-    } catch (error) {
-      console.error('Google Sign-In Error:', error);
-      alert("Google sign-in failed.");
-    } finally {
-      setIsLoading(false);
+    // 🔥 Step 1: Fetch user data from Firestore
+    const userDocRef = doc(db, 'users', firebaseUser.uid);
+    const userSnap = await getDoc(userDocRef);
+
+    let userData;
+
+    if (!userSnap.exists()) {
+      // 🔥 Step 2: Save user if not exists
+      userData = {
+        name: firebaseUser.displayName || '',
+        email: firebaseUser.email || '',
+        phone: firebaseUser.phoneNumber || '',
+        role: 'user', // default role
+        createdAt: new Date()
+      };
+      await setDoc(userDocRef, userData);
+    } else {
+      userData = userSnap.data();
     }
-  };
+
+    // 🔥 Step 3: Merge Firebase user with Firestore data
+    const fullUser = { ...firebaseUser, ...userData };
+
+    // 🔥 Step 4: Store in Auth context + localStorage
+    login(fullUser);
+
+    // 🔥 Step 5: Route based on admin flag
+    if (userData?.role === "admin") {
+      navigate('/admin', { replace: true });
+    } else if (userData.role === 'user') {
+      navigate('/home', { replace: true });
+    }else{
+     navigate('delivery-boys')
+    }
+
+  } catch (error) {
+    console.error('Google Sign-In Error:', error);
+    alert("Google sign-in failed.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   // ✅ Set up recaptcha before sending OTP
   const generateRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        'recaptcha-container',
-        {
-          size: 'invisible',
-          callback: (response: any) => {
-            console.log('reCAPTCHA verified');
-          }
+     if (typeof window !== 'undefined' && !window.recaptchaVerifier) {
+    auth.languageCode = 'en'; // ✅ optional
+
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      'recaptcha-container',
+      {
+        size: 'invisible',
+        callback: (response: any) => {
+          console.log('reCAPTCHA solved:', response);
         },
-        auth
-      );
-    }
+        'expired-callback': () => {
+          console.warn('reCAPTCHA expired');
+        },
+      },
+      auth // ✅ make sure this is correctly initialized
+    );
+  }
   };
 
   const handlePhoneAuth = async () => {
@@ -87,8 +124,14 @@ declare global {
         const result = await confirmationResult.confirm(formData.otp);
         const user = result.user;
         login(user);
-        saveUserToFirestore(user);
-        navigate('/home')
+         saveUserToFirestore(user);
+      if (user && isAdmin) {
+        navigate('/admin', { replace: true });
+      } else if (user) {
+        navigate('/home', { replace: true });
+      } else {
+        navigate('/login', { replace: true });
+      }
       }
     } catch (error) {
       console.error('Phone auth error:', error);
@@ -99,45 +142,51 @@ declare global {
   };
 
   const handleEmailAuth = async () => {
-  setIsLoading(true);
-  const { email, password, name } = formData;
+    setIsLoading(true);
+    const { email, password, name } = formData;
 
-  if (!email || !password) {
-    alert("Email and password are required");
-    setIsLoading(false);
-    return;
-  }
-
-  try {
-    let userCredential;
-
-    if (isLogin) {
-      // Existing user logging in
-      userCredential = await signInWithEmailAndPassword(auth, email, password);
-    } else {
-      // New user registration
-      userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(userCredential.user, {
-        displayName: name || "User",
-      });
+    if (!email || !password) {
+      alert("Email and password are required");
+      setIsLoading(false);
+      return;
     }
 
-    const user = userCredential.user;
-    login(user);
-    saveUserToFirestore(user);
-    navigate('/home')
-    console.log("User authenticated:", user);
-  } catch (error: any) {
-    alert(error.message);
-    console.error("Email auth error:", error);
-  } finally {
-    setIsLoading(false);
-  }
-};
+    try {
+      let userCredential;
 
-const onBack =()=>{
- navigate('/')
-}
+      if (isLogin) {
+        // Existing user logging in
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
+      } else {
+        // New user registration
+        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredential.user, {
+          displayName: name || "User",
+        });
+      }
+
+      const user = userCredential.user;
+      login(user);
+       saveUserToFirestore(user);
+      if (user && isAdmin) {
+        navigate('/admin', { replace: true });
+      } else if (user) {
+        navigate('/home', { replace: true });
+      } else {
+        navigate('/login', { replace: true });
+      }
+      console.log("User authenticated:", user);
+    } catch (error: any) {
+      alert(error.message);
+      console.error("Email auth error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onBack = () => {
+    navigate('/')
+  }
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white">
       <header className="bg-white shadow-sm sticky top-0 z-50">

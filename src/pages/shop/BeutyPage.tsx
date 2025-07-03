@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import { Search, User, Star, Heart, Filter, Sparkles, Crown, BeanIcon } from 'lucide-react';
-import { Store, User as UserType } from '../types';
-import { BottomTabBar } from '../components/BottomTabBar';
+import { Store, User as UserType } from '../../types';
 import { useNavigate } from 'react-router-dom';
-import { beautyCategories } from '../data/categories';
-import { beautyProducts } from '../data/products';
-import { useCartStore } from '../store/cartStore';
-import { BeautyCard } from '../components/BeautyCard';
-import { Header } from '../components/Header';
-import { useOrderViaWhatsApp } from '../hooks/useOrderViaWhatsApp';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { Cart } from '../components/Cart';
-import { UserProfile } from '../components/UserProfile';
-import { useAuth } from '../hooks/useAuth';
+import { beautyCategories } from '../../data/categories';
+import { beautyProducts } from '../../data/products';
+import { useCartStore } from '../../store/cartStore';
+import { BeautyCard } from '../../components/shop/BeautyCard';
+import { useOrderViaWhatsApp } from '../../hooks/useOrderViaWhatsApp';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useAuth } from '../../hooks/useAuth';
 
 
 const defaultStore: Store = {
@@ -47,17 +43,6 @@ const handleLogout = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <Header
-        theme="beauty"
-        cart={cart}
-        store={undefined} // not needed for beauty
-        user={user}
-        onCartClick={() => setIsCartOpen(true)}
-        onUserClick={()=>setIsUserProfileOpen(true)}
-
-      />
-
       {/* Search Bar */}
       <section className="px-4 py-4 bg-gray-50">
         <div className="max-w-md mx-auto">
@@ -169,23 +154,7 @@ const handleLogout = () => {
           </div>
         </div>
       </section>
-      <BottomTabBar
-        navigate={navigate}
-      />
-      <Cart
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cart={cart}
-        store={store}
-        onUpdateQuantity={updateQuantity}
-        onOrderViaWhatsApp={handleOrder}
-      />
-      <UserProfile
-        user={user}
-        onLogout={handleLogout}
-        onClose={() => setIsUserProfileOpen(false)}
-        isOpen={isUserProfileOpen}
-      />
+     
       <div className="h-20"></div>
     </div>
   );

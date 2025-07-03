@@ -1,6 +1,6 @@
 import React from 'react';
 import { Plus, Minus, Star } from 'lucide-react';
-import { Product, CartItem } from '../types';
+import { Product, CartItem } from '../../types';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface ProductCardProps {
@@ -16,8 +16,9 @@ export const UniversalProductCard = ({ product, cartItem, variant, onAddToCart, 
   const location = useLocation();
   const navigate = useNavigate();  
   
-  const basePath = location.pathname.split('/')[1];
+  const basePath = location.pathname.split('/')[2];
 const targetPath = `/${basePath}/product/${product.id}`;
+console.log(targetPath, )
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { X, Plus, Minus, MessageCircle } from 'lucide-react';
-import { CartItem, Store } from '../types';
-import { useOrderFlowStore } from '../store/orderFlowStore';
+import { CartItem, Store } from '../../types';
+import { useOrderFlowStore } from '../../store/orderFlowStore';
 import { useNavigate } from 'react-router-dom';
 
 interface CartProps {
@@ -13,7 +13,7 @@ interface CartProps {
   onOrderViaWhatsApp: () => void;
 }
 
-const FREE_DELIVERY_THRESHOLD = 149;
+const FREE_DELIVERY_THRESHOLD = 199;
 const DELIVERY_CHARGE = 20;
 
 export function Cart({
@@ -40,10 +40,13 @@ export function Cart({
 
   const handleProceedToOrder = () => {
     if (!selectedAddress) {
+      onClose()
       navigate('/delivery-address');
     } else if (!paymentMethod) {
+      onClose()
       navigate('/payment');
     } else {
+      onClose()
       onOrderViaWhatsApp();
     }
   };

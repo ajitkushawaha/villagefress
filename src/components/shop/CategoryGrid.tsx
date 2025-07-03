@@ -1,6 +1,5 @@
 import React from 'react';
-import { categories } from '../data/categories';
-import { Category } from '../types';
+import { categories } from '../../data/categories';
 
 interface CategoryGridProps {
   selectedCategory: string | null;

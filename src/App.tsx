@@ -1,10 +1,10 @@
 import { BrowserRouter } from 'react-router-dom';
-import AppRoutes  from './routes/Router';
-import { SimpleToast } from './components/SimpleToast';
+import AppRoutes  from './routes/AppRoutes';
+import { SimpleToast } from './utils/SimpleToast';
 import { useSimpleToast } from './hooks/useSimpleToast';
 import { useCartStore } from './store/cartStore';
 import { useEffect } from 'react';
-import { InstallPrompt } from './components/InstallPrompt';
+import { InstallPrompt } from './utils/InstallPrompt';
 
 function App() {
    const { message, visible, showToast } = useSimpleToast();

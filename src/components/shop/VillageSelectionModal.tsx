@@ -1,7 +1,7 @@
 // src/components/VillageSelectionModal.tsx
 import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
-import { useVillageStore } from '../store/villageStore';
+import { useVillageStore } from '../../store/villageStore';
 
 const villages = [
   { id: 1, name: 'Majhawalia' },

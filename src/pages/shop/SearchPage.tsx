@@ -2,10 +2,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Search, X, Clock, TrendingUp } from 'lucide-react';
-import { Product } from '../types';
+import { Product } from '../../types';
 
-import { allProducts } from '../data/products';
-import { ProductCard } from '../components/ProductCard';
+import { allProducts } from '../../data/products';
+import { ProductCard } from '../../components/shop/ProductCard';
 
 interface SearchPageProps {
   user: any;

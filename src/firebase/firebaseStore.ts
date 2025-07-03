@@ -1,6 +1,6 @@
 // firestoreService.ts
 
-import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
+import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 
 interface User {
@@ -27,16 +27,31 @@ interface Order {
 }
 
 // ✅ Save new or existing user
-export async function saveUserToFirestore(user: User) {
+
+export async function saveUserToFirestore(user: any) {
   const userRef = doc(db, 'users', user.uid);
-  await setDoc(userRef, {
+  const docSnap = await getDoc(userRef);
+
+  const userData = {
     name: user.displayName || 'User',
     email: user.email || '',
     phone: user.phoneNumber || '',
-    createdAt: new Date(),
     updatedAt: new Date(),
-  }, { merge: true });
+  };
+
+  if (!docSnap.exists()) {
+    // 👇 Only set admin to false when user is first created
+    await setDoc(userRef, {
+      ...userData,
+      admin: false,
+      createdAt: new Date(),
+    });
+  } else {
+    // 👇 Merge other fields, but don't touch admin
+    await setDoc(userRef, userData, { merge: true });
+  }
 }
+
 
 // ✅ Save store (you can pass a dynamic storeId if needed)
 export async function saveStoreToFirestore(store: Store) {
@@ -51,24 +66,4 @@ export async function saveStoreToFirestore(store: Store) {
   }, { merge: true });
 }
 
-// ✅ Save new order
-export async function saveOrderToFirestore(order: Order) {
-  const ordersRef = collection(db, 'orders');
-  await addDoc(ordersRef, {
-    userId: order.userId,
-    storeId: order.storeId,
-    items: order.items,
-    total: order.total,
-    status: 'pending',
-    createdAt: new Date(),
-  });
-}
 
-// ✅ Update only status of order
-export async function updateOrderStatus(orderId: string, status: string) {
-  const orderRef = doc(db, 'orders', orderId);
-  await setDoc(orderRef, {
-    status,
-    updatedAt: new Date(),
-  }, { merge: true });
-}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ShoppingCart, Plus, Minus, Star, Clock, Truck, Shield, Heart, Share2 } from 'lucide-react';
-import { Product, CartItem } from '../types';
-import { Cart } from '../components/Cart';
+import { Product, CartItem } from '../../types';
+import { Cart } from '../../components/shop/Cart';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -26,6 +26,7 @@ export function ProductDetailPage({
   isCartOpen,
   handleOrder,
   store,
+  setIsCartOpen,
 }: ProductDetailPageProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -287,14 +288,7 @@ export function ProductDetailPage({
             </div>
           </div>
         </section>
-        <Cart
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-          cart={cart}
-          store={store}
-          onUpdateQuantity={onUpdateQuantity}
-          onOrderViaWhatsApp={handleOrder}
-        />
+        
         <div className="h-20"></div>
       </div>
     </div>
